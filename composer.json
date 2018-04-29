@@ -1,0 +1,28 @@
+{
+    "name": "oliver-schoendorn/local-captcha",
+    "description": "A local CAPTCHA implementation that is (hopefully) GDPR (DSGVO) compliant",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Oliver Schöndorn",
+            "email": "oliver.schoendorn@icloud.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "OS\\LocalCaptcha\\": "./src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OS\\LocalCaptcha\\": "./tests"
+        }
+    }
+}
