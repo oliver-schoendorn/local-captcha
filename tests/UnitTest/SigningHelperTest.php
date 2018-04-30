@@ -27,6 +27,15 @@ class SigningHelperTest extends TestCase
         parent::setUp();
     }
 
+    public function testSign()
+    {
+        $data = json_encode([ 'foo' => 'bar', md5('lots') => 'of data that', 'might cause' => md5('issues') ]);
+        $data = $this->encryptionHelper->encrypt($data);
+
+        $signedData = $this->subject->sign($data);
+        verify($signedData)->contains($data);
+    }
+
     public function testGetPayload()
     {
         $data = json_encode([ 'foo' => 'bar', md5('lots') => 'of data that', 'might cause' => md5('issues') ]);
@@ -38,11 +47,11 @@ class SigningHelperTest extends TestCase
 
     public function testVerify()
     {
+        $data = json_encode([ 'foo' => 'bar', md5('lots') => 'of data that', 'might cause' => md5('issues') ]);
+        $data = $this->encryptionHelper->encrypt($data);
 
-    }
-
-    public function testSign()
-    {
-
+        $signedData = $this->subject->sign($data);
+        verify($signedData)->contains($data);
+        verify($this->subject->verify($signedData))->true();
     }
 }

@@ -78,7 +78,7 @@ class EncryptionHelper
             OPENSSL_RAW_DATA, $initializationVector);
 
         if ($decryptedData === false) {
-            throw new DecryptionException();
+            throw new DecryptionException(); // @codeCoverageIgnore
         }
 
         return $decryptedData;
