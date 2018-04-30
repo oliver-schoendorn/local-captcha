@@ -3,8 +3,6 @@
 namespace OS\LocalCaptcha;
 
 
-use OS\LocalCaptcha\Exception\DecryptionException;
-use OS\LocalCaptcha\Exception\HoneypotNotEmptyException;
 use OS\LocalCaptcha\Exception\LocalCaptchaException;
 use OS\LocalCaptcha\Exception\TuringTestException;
 use OS\LocalCaptcha\Helper\EncryptionHelper;
@@ -31,11 +29,6 @@ class LocalCaptcha implements LoggerAwareInterface
      * @var EncryptionHelper
      */
     private $encryptionHelper;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
     /**
      * LocalCaptcha constructor.
