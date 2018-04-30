@@ -21,7 +21,7 @@ class SigningHelper
      * @param string $signature
      * @param string $hashAlgorithm
      */
-    public function __construct(string $signature, string $hashAlgorithm = 'sha1')
+    public function __construct(string $signature, string $hashAlgorithm = 'sha256')
     {
         $this->signature = hash_hkdf('sha256', $signature);
         $this->hashAlgorithm = $hashAlgorithm;

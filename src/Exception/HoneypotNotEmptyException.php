@@ -3,7 +3,7 @@
 namespace OS\LocalCaptcha\Exception;
 
 
-class HoneypotNotEmptyException extends LocalCaptchaException
+class HoneypotNotEmptyException extends TuringTestException
 {
     /**
      * @var string

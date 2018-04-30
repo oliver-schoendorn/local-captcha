@@ -22,6 +22,9 @@ class EncryptionHelper
      */
     private $hashAlgorithm;
 
+    /**
+     * @var int
+     */
     private $initializationVectorLength;
 
     /**

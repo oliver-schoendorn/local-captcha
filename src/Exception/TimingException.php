@@ -3,7 +3,7 @@
 namespace OS\LocalCaptcha\Exception;
 
 
-class TimingException extends LocalCaptchaException
+class TimingException extends TuringTestException
 {
 
 }

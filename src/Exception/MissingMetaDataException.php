@@ -3,7 +3,7 @@
 namespace OS\LocalCaptcha\Exception;
 
 
-class MissingMetaDataException extends LocalCaptchaException
+class MissingMetaDataException extends TuringTestException
 {
     public function __construct()
     {
