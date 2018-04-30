@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit bootstrap="./vendor/autoload.php" colors="true">
+
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>./tests/UnitTest/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <blacklist>
+            <directory>./vendor</directory>
+        </blacklist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory>./src</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-text" target="php://stdout" />
+        <log type="coverage-html" target="./tests/Coverage/Html" title="Local CAPTCHA test coverage" charset="UTF-8" />
+    </logging>
+
+</phpunit>

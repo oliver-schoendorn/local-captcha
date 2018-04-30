@@ -5,8 +5,6 @@ namespace OS\LocalCaptcha\Helper;
 
 class SigningHelper
 {
-    const DELIMITER = '.';
-
     /**
      * @var string
      */
@@ -43,7 +41,7 @@ class SigningHelper
 
     private function joinSignature(string $data, string $signature): string
     {
-        return $data . $this::DELIMITER . $signature;
+        return $signature . $data;
     }
 
     private function getSignature(string $data): string
@@ -66,11 +64,12 @@ class SigningHelper
 
     private function separateSignature(string $signedData): array
     {
-        $parts = explode($this::DELIMITER, $signedData);
-        $signature = array_pop($parts);
+        $signatureLength = mb_strlen(hash($this->hashAlgorithm, '', true), '8bit');
+        $signature = mb_substr($signedData, 0, $signatureLength, '8bit');
+        $payload = mb_substr($signedData, $signatureLength, null, '8bit');
 
         return [
-            implode($this::DELIMITER, $parts),
+            $payload,
             $signature
         ];
     }

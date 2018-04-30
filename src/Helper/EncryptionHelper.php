@@ -22,6 +22,8 @@ class EncryptionHelper
      */
     private $hashAlgorithm;
 
+    private $initializationVectorLength;
+
     /**
      * EncryptionHelper constructor.
      *
@@ -31,9 +33,20 @@ class EncryptionHelper
      */
     public function __construct(string $encryptionKey, string $encryptionMethod = 'aes-128-ctr', string $hashAlgorithm = 'crc32')
     {
-        $this->encryptionKey    = openssl_digest($encryptionKey, 'sha256', true);
+        $this->encryptionKey = openssl_digest($encryptionKey, 'sha256', true);
         $this->encryptionMethod = $encryptionMethod;
-        $this->hashAlgorithm    = $hashAlgorithm;
+        $this->hashAlgorithm = $hashAlgorithm;
+        $this->initializationVectorLength = openssl_cipher_iv_length($encryptionMethod);
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return string
+     */
+    public function hash(string $data): string
+    {
+        return hash($this->hashAlgorithm, $data, true);
     }
 
     /**
@@ -47,7 +60,7 @@ class EncryptionHelper
         $encryptedData = openssl_encrypt($data, $this->encryptionMethod, $this->encryptionKey,
             OPENSSL_RAW_DATA, $initializationVector);
 
-        return $initializationVector . '.' . $encryptedData;
+        return $initializationVector . $encryptedData;
     }
 
     /**
@@ -58,7 +71,9 @@ class EncryptionHelper
      */
     public function decrypt(string $data): string
     {
-        list($initializationVector, $encryptedData) = explode('.', $data);
+        $initializationVector = mb_substr($data, 0, $this->initializationVectorLength, '8bit');
+        $encryptedData = mb_substr($data, $this->initializationVectorLength, null, '8bit');
+
         $decryptedData = openssl_decrypt($encryptedData, $this->encryptionMethod, $this->encryptionKey,
             OPENSSL_RAW_DATA, $initializationVector);
 
@@ -71,7 +86,6 @@ class EncryptionHelper
 
     private function getInitializationVector(): string
     {
-        $length = openssl_cipher_iv_length($this->encryptionMethod);
-        return openssl_random_pseudo_bytes($length);
+        return openssl_random_pseudo_bytes($this->initializationVectorLength);
     }
 }
