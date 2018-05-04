@@ -1,3 +1,6 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=a3e8371511b9d01c2375d0fc62acf34aabaa591fd5395c01149d0ce8e0ed1df4
 language: php
 php:
   - '7.0'
@@ -8,8 +11,16 @@ install:
   - composer self-update
   - composer install
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
 script:
   - php vendor/bin/phpunit --coverage-clover ./tests/Coverage/Clover.xml
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
   - php vendor/bin/php-coveralls
