@@ -23,7 +23,9 @@ class SigningHelper
      */
     public function __construct(string $signature, string $hashAlgorithm = 'sha256')
     {
-        $this->signature = hash_hkdf('sha256', $signature);
+        $this->signature = version_compare(PHP_VERSION, '7.1.2', '>=')
+            ? hash_hkdf('sha256', $signature)
+            : hash_hmac($hashAlgorithm, 'SIGNATURE', $signature, true);
         $this->hashAlgorithm = $hashAlgorithm;
     }
 
