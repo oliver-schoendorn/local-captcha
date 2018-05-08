@@ -10,6 +10,7 @@
     <filter>
         <blacklist>
             <directory>./vendor</directory>
+            <directory>./examples</directory>
         </blacklist>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory>./src</directory>

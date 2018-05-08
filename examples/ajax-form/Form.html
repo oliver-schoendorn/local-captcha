@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2018 Oliver Schöndorn
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Form</title>
+</head>
+<body>
+
+<form id="form" action='/form' method='post'></form>
+<script>
+    $.get('/form').then(formData => {
+        // Execute the javascript helper
+        eval(formData.javascriptHelper);
+
+        // Add the meta data field to the form
+        const formElement = $('#form')
+        const metaDataField = $('<input>')
+            .attr('type', 'hidden')
+            .attr('name', formData.metaData.name)
+            .attr('value', formData.metaData.value)
+        formElement.append(metaDataField)
+
+        // Append honeypots
+        for (let i = 0; i < formData.honeypots.length; ++i) {
+            const honeypot = formData.honeypots[i]
+            const honeypotInput = $('<input>')
+                .attr('id', honeypot.id)
+                .attr('type', honeypot.type)
+                .attr('name', honeypot.name)
+                .attr('placeholder', honeypot.placeholder)
+                .css(honeypot.style)
+            formElement.append(honeypotInput)
+
+            // Execute javascript if field has some (make sure to execute this AFTER the input field has been
+            // mounted to the DOM)
+            if (honeypot.javascript) {
+                eval(honeypot.javascript)
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,4 +1,19 @@
 <?php
+/**
+ * Copyright (c) 2018 Oliver Schöndorn
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 namespace OS\LocalCaptcha;
 
@@ -8,19 +23,18 @@ use OS\LocalCaptcha\Exception\HoneypotNotEmptyException;
 use OS\LocalCaptcha\Exception\HoneypotNotExistingException;
 use OS\LocalCaptcha\Exception\InvalidFormIdException;
 use OS\LocalCaptcha\Exception\InvalidMetaDataException;
-use OS\LocalCaptcha\Exception\LocalCaptchaException;
 use OS\LocalCaptcha\Exception\MissingMetaDataException;
 use OS\LocalCaptcha\Exception\InvalidSignatureException;
 use OS\LocalCaptcha\Exception\TimingException;
 use OS\LocalCaptcha\Helper\EncryptionHelper;
 use OS\LocalCaptcha\Helper\SigningHelper;
 
-class FormData implements \ArrayAccess
+class FormData extends Form implements \ArrayAccess
 {
-    /**
-     * @var string
-     */
-    private $formId;
+
+    const MIN_INTERVAL_UNTIL_VALID = 'PT15S';
+
+    const MAX_INTERVAL_UNTIL_INVALID = 'PT24H';
 
     /**
      * @var array
@@ -38,16 +52,6 @@ class FormData implements \ArrayAccess
     private $metaData;
 
     /**
-     * @var EncryptionHelper
-     */
-    private $encryptionHelper;
-
-    /**
-     * @var SigningHelper
-     */
-    private $signingHelper;
-
-    /**
      * FormData constructor.
      *
      * @param string           $formId
@@ -57,14 +61,19 @@ class FormData implements \ArrayAccess
      */
     public function __construct(string $formId, array $submittedData, EncryptionHelper $encryptionHelper, SigningHelper $signingHelper)
     {
-        $this->formId = $formId;
+        parent::__construct($formId, $encryptionHelper, $signingHelper);
         $this->data = $submittedData;
-        $this->encryptionHelper = $encryptionHelper;
-        $this->signingHelper = $signingHelper;
     }
 
     /**
-     * @throws LocalCaptchaException
+     * @throws DecryptionException
+     * @throws HoneypotNotEmptyException
+     * @throws HoneypotNotExistingException
+     * @throws InvalidFormIdException
+     * @throws InvalidMetaDataException
+     * @throws InvalidSignatureException
+     * @throws MissingMetaDataException
+     * @throws TimingException
      */
     public function validate()
     {
@@ -130,8 +139,8 @@ class FormData implements \ArrayAccess
         }
 
         // Check form generation DateTime was at least 30 seconds ago
-        $validFrom = $this->metaData->getGenerationDate()->add(new \DateInterval('PT30S'));
-        $validUntil = $this->metaData->getGenerationDate()->add(new \DateInterval('PT24H'));
+        $validFrom = $this->metaData->getGenerationDate()->add(new \DateInterval($this::MIN_INTERVAL_UNTIL_VALID));
+        $validUntil = $this->metaData->getGenerationDate()->add(new \DateInterval($this::MAX_INTERVAL_UNTIL_INVALID));
         $now = new \DateTime();
 
         // User took less than 30 seconds to fill fields and hit the submit button

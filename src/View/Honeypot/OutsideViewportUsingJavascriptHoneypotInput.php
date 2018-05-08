@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-namespace OS\LocalCaptcha\Exception;
+namespace OS\LocalCaptcha\View\Honeypot;
 
 
-use Throwable;
-
-/**
- * Class TimingException
- * @package OS\LocalCaptcha\Exception
- * @codeCoverageIgnore
- */
-class TimingException extends TuringTestException
+class OutsideViewportUsingJavascriptHoneypotInput extends AbstractHoneypotInput
 {
+    /**
+     * HiddenUsingJavascriptHoneypotInput constructor.
+     *
+     * @param string $name
+     * @param array  $attributes
+     *
+     * @throws \Exception
+     */
     public function __construct(
-        string $message = "",
-        Throwable $previous = null
+        string $name,
+        array $attributes = []
     )
     {
-        parent::__construct($message, $this::CODE_TIMING_EXCEPTION, $previous);
+        $javascript = $this->loadJavascript('OutsideViewport.js');
+        parent::__construct($name, '', 'text', $attributes, $javascript);
     }
-
 }

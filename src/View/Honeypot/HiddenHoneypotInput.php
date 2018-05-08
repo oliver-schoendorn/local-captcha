@@ -15,24 +15,24 @@
  * limitations under the License.
  */
 
-namespace OS\LocalCaptcha\Exception;
+namespace OS\LocalCaptcha\View\Honeypot;
 
 
-use Throwable;
-
-/**
- * Class TimingException
- * @package OS\LocalCaptcha\Exception
- * @codeCoverageIgnore
- */
-class TimingException extends TuringTestException
+class HiddenHoneypotInput extends AbstractHoneypotInput
 {
     public function __construct(
-        string $message = "",
-        Throwable $previous = null
-    )
-    {
-        parent::__construct($message, $this::CODE_TIMING_EXCEPTION, $previous);
+        string $name,
+        string $type = 'text',
+        array $attributes = [],
+        string $javascript = null
+    ) {
+        parent::__construct($name, '', $type, $attributes, $javascript);
     }
 
+    public function getAttributes(): array
+    {
+        $attributes = parent::getAttributes();
+        $this->addToStyles($attributes, 'display', 'none');
+        return $attributes;
+    }
 }
