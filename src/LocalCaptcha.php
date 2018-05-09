@@ -84,7 +84,7 @@ class LocalCaptcha implements LoggerAwareInterface
         }
         catch (\Throwable $throwable) {
             if ($this->logger) {
-                $this->logThrowable($throwable);
+                $this->logThrowable($throwable, $submittedData);
             }
             throw $throwable;
         }
@@ -92,20 +92,30 @@ class LocalCaptcha implements LoggerAwareInterface
         return $formData;
     }
 
-    private function logThrowable(\Throwable $throwable)
+    private function logThrowable(\Throwable $throwable, array $submittedData)
     {
         switch (true) {
             case $throwable instanceof TuringTestException:
-                $this->logger->debug('LocalCaptcha: Turing test failed', [ 'exception' => $throwable ]);
+                $this->logger->debug('LocalCaptcha: Turing test failed', [
+                    'formId' => $this->formId,
+                    'exception' => $throwable,
+                    'submittedData' => $submittedData
+                ]);
                 break;
 
             case $throwable instanceof LocalCaptchaException:
-                $this->logger->error('LocalCaptcha: Error', [ 'exception' => $throwable ]);
+                $this->logger->error('LocalCaptcha: Error', [
+                    'formId' => $this->formId,
+                    'exception' => $throwable
+                ]);
                 break;
 
             // @codeCoverageIgnoreStart
             default:
-                $this->logger->critical('LocalCaptcha: Unexpected exception', [ 'exception' => $throwable ]);
+                $this->logger->critical('LocalCaptcha: Unexpected exception', [
+                    'formId' => $this->formId,
+                    'exception' => $throwable
+                ]);
                 break;
             // @codeCoverageIgnoreEnd
         }
