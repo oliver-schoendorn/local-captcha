@@ -111,7 +111,7 @@ abstract class AbstractHoneypotInput extends InputField
         }
 
         return sprintf(
-            'window.LocalCaptcha.onLoad(function() { var uniqueId = %s; %s });)',
+            'window.LocalCaptcha.onLoad(function() { var uniqueId = %s; %s });',
             json_encode($this->uniqueId),
             $this->javascript
         );

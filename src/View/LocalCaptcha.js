@@ -8,6 +8,7 @@ if ( ! window.LocalCaptcha) {
             if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", function() {
                     document.removeEventListener('DOMContentLoaded', arguments.callee, false);
+                    _documentReady = true
                     _onLoadCallback()
                 })
             }
@@ -15,6 +16,7 @@ if ( ! window.LocalCaptcha) {
                 document.attachEvent("onreadystatechange", function(){
                     if (document.readyState === "complete") {
                         document.detachEvent("onreadystatechange", arguments.callee);
+                        _documentReady = true
                         _onLoadCallback();
                     }
                 });

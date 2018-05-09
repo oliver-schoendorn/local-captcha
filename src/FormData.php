@@ -32,7 +32,7 @@ use OS\LocalCaptcha\Helper\SigningHelper;
 class FormData extends Form implements \ArrayAccess
 {
 
-    const MIN_INTERVAL_UNTIL_VALID = 'PT15S';
+    const MIN_INTERVAL_UNTIL_VALID = 'PT5S';
 
     const MAX_INTERVAL_UNTIL_INVALID = 'PT24H';
 
